@@ -15,6 +15,7 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
     override val searchQuery = _searchQuery.asStateFlow()
     private val _ordering = MutableStateFlow(false)
     override val ordering = _ordering.asStateFlow()
+    private var favorite: Boolean = false
 
     override suspend fun getNext(): List<Course> {
         try {
@@ -36,6 +37,9 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
             // we get "has_next" equal to false or some content.
             if (courses.isEmpty() && hasNext) {
                 courses = getNext()
+            }
+            if (favorite) {  // TODO: keep favorite courses IDs in DB
+                courses = courses.filter { it.is_favorite }
             }
             return courses
         } catch (err: Exception) {
@@ -65,6 +69,9 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
             if (courses.isEmpty() && hasPrevious) {
                 courses = getPrevious()
             }
+            if (favorite) {  // TODO: Keep favorite courses IDs in DB
+                courses = courses.filter { it.is_favorite }
+            }
             return courses
         } catch (err: Exception) {
             Log.e(TAG, "Error on courses list loading: ${err.toString()}")
@@ -90,6 +97,10 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
 
     override fun setOrdering(order: Boolean) {
         _ordering.value = order
+    }
+
+    override fun setFavorite(newFavorite: Boolean) {
+        favorite = newFavorite
     }
 
     companion object {

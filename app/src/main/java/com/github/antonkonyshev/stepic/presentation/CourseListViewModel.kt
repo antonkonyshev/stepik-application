@@ -116,6 +116,16 @@ class CourseListViewModel() : ViewModel(), KoinComponent {
         }
     }
 
+    fun changeScreen(favorite: Boolean = false) {
+        courseRepository.clearFilters()
+        courseRepository.clearPagination()
+        courseRepository.setFavorite(favorite)
+        _courses.value = emptyList()
+        viewModelScope.launch(Dispatchers.IO) {
+            loadNext()
+        }
+    }
+
     fun toggleFavorite(course: Course) {
         TODO("implement")
     }

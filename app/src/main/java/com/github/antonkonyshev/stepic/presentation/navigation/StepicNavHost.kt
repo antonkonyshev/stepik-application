@@ -4,11 +4,6 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FolderOpen
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
@@ -18,12 +13,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.github.antonkonyshev.stepic.R
 import com.github.antonkonyshev.stepic.presentation.CourseListScreen
+import com.github.antonkonyshev.stepic.presentation.CourseListViewModel
 import com.github.antonkonyshev.stepic.presentation.UiEvent
 import com.github.antonkonyshev.stepic.presentation.getActivity
 
@@ -71,6 +68,8 @@ fun StepicNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
+    val courseListViewModel: CourseListViewModel = viewModel()
+
     NavHost(
         navController = navController,
         startDestination = StepicNavRouting.route_course_list,
@@ -80,7 +79,7 @@ fun StepicNavHost(
         popExitTransition = { fadeOut() }
     ) {
         composable(StepicNavRouting.route_course_list) {
-            CourseListScreen(modifier = modifier)
+            CourseListScreen(viewModel = courseListViewModel, modifier = modifier)
         }
 
         composable(
@@ -91,7 +90,7 @@ fun StepicNavHost(
         }
 
         composable(StepicNavRouting.route_favorite) {
-            CourseListScreen(modifier = modifier)
+            CourseListScreen(viewModel = courseListViewModel, favorite = true, modifier = modifier)
         }
 
         composable(StepicNavRouting.route_account) {

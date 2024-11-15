@@ -7,22 +7,27 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.github.antonkonyshev.stepic.R
 import com.github.antonkonyshev.stepic.domain.Course
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
 import java.util.Date
@@ -31,17 +36,40 @@ import java.util.Date
 fun CourseListScreen(
     viewModel: CourseListViewModel = viewModel(),
     courses: List<Course> = viewModel.courses.collectAsStateWithLifecycle().value,
-    modifier: Modifier = Modifier
+    favorite: Boolean = false,
+    modifier: Modifier = Modifier,
 ) {
+    LaunchedEffect(favorite) {
+        viewModel.changeScreen(favorite)
+    }
+
     val listState = rememberLazyListState()
 
     Column {
-        CourseListFiltering(
-            searchQuery = viewModel.courseRepository.searchQuery.collectAsStateWithLifecycle().value,
-            ordering = viewModel.courseRepository.ordering.collectAsStateWithLifecycle().value,
-            onSearch = viewModel::applySearchFilter,
-            toggleOrdering = viewModel::toggleOrdering
-        )
+        AnimatedVisibility(visible = !favorite) {
+            CourseListFiltering(
+                searchQuery = viewModel.courseRepository.searchQuery.collectAsStateWithLifecycle().value,
+                ordering = viewModel.courseRepository.ordering.collectAsStateWithLifecycle().value,
+                onSearch = viewModel::applySearchFilter,
+                toggleOrdering = viewModel::toggleOrdering
+            )
+        }
+
+        AnimatedVisibility(visible = favorite) {
+            Box(
+                contentAlignment = Alignment.CenterStart,
+                modifier = Modifier
+                    .height(60.dp)
+                    .padding(start = 15.dp, top = 35.dp, end = 15.dp, bottom = 0.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.favorite),
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+        }
 
         LazyColumn(state = listState, modifier = Modifier) {
             items(courses, key = { it.id }) { course ->

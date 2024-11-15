@@ -15,4 +15,5 @@ interface CourseRepository {
     fun clearFilters()
     fun setSearchQuery(query: String)
     fun setOrdering(order: Boolean)
+    fun setFavorite(favorite: Boolean)
 }

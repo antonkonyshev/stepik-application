@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="details">Подробнее</string>
+    <string name="list_of_courses">Список курсов</string>
+    <string name="course">Курс</string>
+    <string name="favorite">Избранное</string>
+    <string name="account">Аккаунт</string>
+    <string name="main">Главная</string>
 </resources>

@@ -24,6 +24,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.antonkonyshev.stepic.domain.Course
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
+import java.util.Date
 
 @Composable
 fun CourseListScreen(
@@ -91,23 +92,26 @@ fun CourseListScreenPreview() {
                 Course(
                     1, "Test 1", "Testing course",
                     "https://cdn.stepik.net/media/cache/images/courses/221585/cover_EJp9uXA/e39ef81b8985462b5f92f9e3a41e9afb.jpg",
+                    readiness = 0.89f,
                     is_paid = false,
                     display_price = "-",
-                    create_date = "2024-11-01T15:00"
+                    create_date = Date()
                 ),
                 Course(
                     1, "Test 2", "Testing course",
                     "https://cdn.stepik.net/media/cache/images/courses/221585/cover_EJp9uXA/e39ef81b8985462b5f92f9e3a41e9afb.jpg",
+                    readiness = 0.91f,
                     is_paid = false,
                     display_price = "-",
-                    create_date = "2024-11-01T15:00"
+                    create_date = Date()
                 ),
                 Course(
                     1, "Test 1", "Testing course",
                     "https://cdn.stepik.net/media/cache/images/courses/221585/cover_EJp9uXA/e39ef81b8985462b5f92f9e3a41e9afb.jpg",
+                    readiness = 0.75f,
                     is_paid = false,
                     display_price = "-",
-                    create_date = "2024-11-01T15:00"
+                    create_date = Date()
                 )
             )
         )

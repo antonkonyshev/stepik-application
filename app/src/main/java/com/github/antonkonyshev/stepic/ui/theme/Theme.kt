@@ -1,6 +1,5 @@
 package com.github.antonkonyshev.stepic.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +21,10 @@ private val DarkColorScheme = darkColorScheme(
     surface = SurfaceDarkBackground,
     onPrimary = OnDarkSurface,
     onSecondary = OnDarkSurface,
-    onSurface = OnDarkSurface
+    onSurface = OnDarkSurface,
+    surfaceDim = GlassBackground,
+    outline = GrayBorderColor,
+    surfaceBright = GrayIndicationColor,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -34,7 +36,10 @@ private val LightColorScheme = lightColorScheme(
     surface = SurfaceLightBackground,
     onPrimary = OnLightSurface,
     onSecondary = OnLightSurface,
-    onSurface = OnLightSurface
+    onSurface = OnLightSurface,
+    surfaceDim = GlassBackground,
+    outline = GrayBorderColor,
+    surfaceBright = GrayIndicationColor,
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),

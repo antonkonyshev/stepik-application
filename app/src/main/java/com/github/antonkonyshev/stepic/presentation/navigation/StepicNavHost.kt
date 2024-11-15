@@ -8,6 +8,11 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -28,7 +33,7 @@ sealed class StepicNavRouting(
     val icon: ImageVector
 ) {
     companion object {
-        val screens = listOf(CourseList, CourseDetails, Favorite, Account)
+        val screens = listOf(CourseList, Favorite, Account)
 
         const val route_course_list = "courses"
         const val route_course_details = "course"
@@ -45,19 +50,19 @@ sealed class StepicNavRouting(
     }
 
     private object CourseList : StepicNavRouting(
-        route_course_list, R.string.list_of_courses, Icons.Default.Home
+        route_course_list, R.string.main, Icons.Outlined.Home
     )
 
     private object CourseDetails : StepicNavRouting(
-        route_course_details, R.string.course, Icons.Default.FolderOpen
+        route_course_details, R.string.course, Icons.Outlined.Info
     )
 
     private object Favorite : StepicNavRouting(
-        route_favorite, R.string.favorite, Icons.Default.Favorite
+        route_favorite, R.string.favorite, Icons.Outlined.BookmarkBorder
     )
 
     private object Account : StepicNavRouting(
-        route_account, R.string.account, Icons.Default.AccountBox
+        route_account, R.string.account, Icons.Outlined.Person
     )
 }
 

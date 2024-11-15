@@ -6,17 +6,22 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRightAlt
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -34,6 +39,9 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.github.antonkonyshev.stepic.R
 import com.github.antonkonyshev.stepic.domain.Course
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
+import java.text.SimpleDateFormat
+import java.util.Date
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -45,17 +53,67 @@ fun CourseCard(course: Course) {
         ),
         modifier = Modifier.padding(12.dp)
     ) {
-        GlideImage(
-            model = course.cover, contentDescription = course.title,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .height(120.dp)
-                .padding(0.dp)
-                .clip(RoundedCornerShape(12.dp))
-        )
-
         val textPaddingsModifier = remember {
             Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
+        }
+
+        Box(
+            modifier = Modifier
+                .height(120.dp)
+                .fillMaxWidth()
+        ) {
+            GlideImage(
+                model = course.cover, contentDescription = course.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .height(120.dp)
+                    .padding(0.dp)
+                    .clip(RoundedCornerShape(12.dp))
+            )
+
+            Row(
+                modifier = textPaddingsModifier.offset(y = 74.dp)
+            ) {
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceDim,
+                    modifier = Modifier.clip(RoundedCornerShape(12.dp))
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .height(intrinsicSize = IntrinsicSize.Max)
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = "Rating",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .padding(end = 5.dp)
+                        )
+                        Text(
+                            text = ((course.readiness * 100f).roundToInt() / 10f).toString(),
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
+                }
+
+                AnimatedVisibility(visible = course.create_date != null) {
+                    Surface(
+                        color = MaterialTheme.colorScheme.surfaceDim,
+                        modifier = Modifier
+                            .padding(start = 10.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                    ) {
+                        val formatter = remember { SimpleDateFormat("d MMMM yyyy") }
+                        Text(
+                            text = formatter.format(course.create_date!!),
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                        )
+                    }
+                }
+            }
         }
 
         Text(
@@ -123,9 +181,10 @@ fun CourseCardPreview() {
                 title = "Testing title",
                 summary = "Testing summary",
                 cover = "",
+                readiness = 0.89f,
                 is_paid = true,
                 display_price = "15000 ₽",
-                create_date = "2024-11-11T15:00"
+                create_date = Date()
             )
         )
     }

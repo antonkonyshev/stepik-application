@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.github.antonkonyshev.stepic.presentation.navigation.BottomNavigationBar
 import com.github.antonkonyshev.stepic.presentation.navigation.StepicNavHost
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,11 +30,15 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             StepicTheme(darkTheme = true, dynamicColor = false) {
+                val navController = rememberNavController()
+
                 Scaffold(
                     containerColor = MaterialTheme.colorScheme.background,
+                    bottomBar = {
+                        BottomNavigationBar(navController)
+                    },
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
-                    val navController = rememberNavController()
                     StepicNavHost(navController, modifier = Modifier.padding(innerPadding))
                 }
             }

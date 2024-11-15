@@ -6,4 +6,6 @@
     <string name="favorite">Favorite</string>
     <string name="account">Account</string>
     <string name="main">Main</string>
+    <string name="search_courses">Search courses</string>
+    <string name="filters">Filters</string>
 </resources>

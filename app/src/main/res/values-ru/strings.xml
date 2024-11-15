@@ -6,4 +6,6 @@
     <string name="favorite">Избранное</string>
     <string name="account">Аккаунт</string>
     <string name="main">Главная</string>
+    <string name="search_courses">Искать курсы</string>
+    <string name="filters">Фильтры</string>
 </resources>

@@ -3,16 +3,26 @@ package com.github.antonkonyshev.stepic.data
 import android.util.Log
 import com.github.antonkonyshev.stepic.domain.Course
 import com.github.antonkonyshev.stepic.domain.CourseRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
     private var page: Long = 0
     override var pageSize: Int = 20
     override var hasNext: Boolean = false
     override var hasPrevious: Boolean = false
+    private val _searchQuery = MutableStateFlow("")
+    override val searchQuery = _searchQuery.asStateFlow()
 
     override suspend fun getNext(): List<Course> {
         try {
-            val response = api.fetchCourses(++page, pageSize)
+            val response = api.fetchCourses(
+                page = ++page, pageSize = pageSize,
+                search = when(searchQuery.value.isNotBlank()) {
+                    true -> searchQuery.value
+                    else -> null
+                },
+            )
             hasNext = response.meta.has_next
             var courses = response.courses
             // Sometimes stepik API endpoint returns empty lists with "has_next" equal to true
@@ -31,7 +41,13 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
 
     override suspend fun getPrevious(): List<Course> {
         try {
-            val response = api.fetchCourses(--page, pageSize)
+            val response = api.fetchCourses(
+                page = --page, pageSize = pageSize,
+                search = when(searchQuery.value.isNotBlank()) {
+                    true -> searchQuery.value
+                    else -> null
+                }
+            )
             hasPrevious = response.meta.has_previous && page > 1
             var courses = response.courses
             // Sometimes stepik API endpoint returns empty lists with "has_previous" equal to true
@@ -52,6 +68,14 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
         page = 0
         hasNext = false
         hasPrevious = false
+    }
+
+    override fun clearFilters() {
+        _searchQuery.value = ""
+    }
+
+    override fun setSearchQuery(query: String) {
+        _searchQuery.value = query
     }
 
     companion object {

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.TweenSpec
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -34,13 +35,20 @@ fun CourseListScreen(
 ) {
     val listState = rememberLazyListState()
 
-    LazyColumn(state = listState, modifier = Modifier.padding(12.dp)) {
-        items(courses, key = { it.id }) { course ->
-            CourseCard(course = course)
-        }
+    Column {
+        CourseListFiltering(
+            searchQuery = viewModel.courseRepository.searchQuery.collectAsStateWithLifecycle().value,
+            onSearch = viewModel::applySearchFilter
+        )
 
-        item {
-            LoadingSpinner(viewModel.loading.collectAsStateWithLifecycle().value)
+        LazyColumn(state = listState, modifier = Modifier.padding(12.dp)) {
+            items(courses, key = { it.id }) { course ->
+                CourseCard(course = course, toggleFavorite = viewModel::toggleFavorite)
+            }
+
+            item {
+                LoadingSpinner(viewModel.loading.collectAsStateWithLifecycle().value)
+            }
         }
     }
 

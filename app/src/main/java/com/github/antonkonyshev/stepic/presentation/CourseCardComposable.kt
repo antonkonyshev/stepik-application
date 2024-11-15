@@ -15,10 +15,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Bookmark
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -34,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.github.antonkonyshev.stepic.R
@@ -45,7 +49,7 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CourseCard(course: Course) {
+fun CourseCard(course: Course, toggleFavorite: (Course) -> Unit = {}) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -70,6 +74,30 @@ fun CourseCard(course: Course) {
                     .padding(0.dp)
                     .clip(RoundedCornerShape(12.dp))
             )
+
+            FloatingActionButton(
+                onClick = {
+                    toggleFavorite(course)
+                },
+                containerColor = MaterialTheme.colorScheme.surfaceDim,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(15.dp)
+                    .size(34.dp)
+                    .clip(RoundedCornerShape(14.dp))
+            ) {
+                Icon(
+                    imageVector = when (course.is_favorite) {
+                        true -> Icons.Outlined.Bookmark
+                        else -> Icons.Outlined.BookmarkBorder
+                    },
+                    contentDescription = "Add to favorites",
+                    modifier = Modifier
+                        .size(16.dp)
+                        .padding(0.dp)
+                )
+            }
 
             Row(
                 modifier = textPaddingsModifier.offset(y = 74.dp)
@@ -176,7 +204,7 @@ fun CourseCard(course: Course) {
 fun CourseCardPreview() {
     StepicTheme(darkTheme = true, dynamicColor = false) {
         CourseCard(
-            Course(
+            course = Course(
                 id = 123L,
                 title = "Testing title",
                 summary = "Testing summary",
@@ -184,7 +212,27 @@ fun CourseCardPreview() {
                 readiness = 0.89f,
                 is_paid = true,
                 display_price = "15000 ₽",
-                create_date = Date()
+                create_date = Date(),
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CourseCardFavoriteAndFreePreview() {
+    StepicTheme(darkTheme = true, dynamicColor = false) {
+        CourseCard(
+            course = Course(
+                id = 123L,
+                title = "Testing title",
+                summary = "Testing summary",
+                cover = "",
+                is_favorite = true,
+                readiness = 0.75f,
+                is_paid = false,
+                display_price = "-",
+                create_date = Date(),
             )
         )
     }

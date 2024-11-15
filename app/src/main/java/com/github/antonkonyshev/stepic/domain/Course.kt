@@ -11,4 +11,5 @@ data class Course(
     val is_paid: Boolean,
     val display_price: String,
     val create_date: Date?,
+    var is_favorite: Boolean = false,
 )

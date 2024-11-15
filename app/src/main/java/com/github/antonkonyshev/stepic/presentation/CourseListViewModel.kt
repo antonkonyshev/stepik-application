@@ -20,7 +20,7 @@ class CourseListViewModel() : ViewModel(), KoinComponent {
     private val _loading = MutableStateFlow<Boolean>(true)
     val loading = _loading.asStateFlow()
 
-    private val courseRepository: CourseRepository by inject()
+    val courseRepository: CourseRepository by inject()
 
     init {
         courseRepository.clearPagination()
@@ -96,5 +96,18 @@ class CourseListViewModel() : ViewModel(), KoinComponent {
                 }
             }
         }
+    }
+
+    fun applySearchFilter(query: String) {
+        courseRepository.setSearchQuery(query)
+        courseRepository.clearPagination()
+        _courses.value = emptyList()
+        viewModelScope.launch(Dispatchers.IO) {
+            loadNext()
+        }
+    }
+
+    fun toggleFavorite(course: Course) {
+        TODO("implement")
     }
 }

@@ -55,7 +55,7 @@ fun CourseCard(course: Course, toggleFavorite: (Course) -> Unit = {}) {
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface,
         ),
-        modifier = Modifier.padding(12.dp)
+        modifier = Modifier.padding(15.dp)
     ) {
         val textPaddingsModifier = remember {
             Modifier.padding(horizontal = 15.dp, vertical = 10.dp)

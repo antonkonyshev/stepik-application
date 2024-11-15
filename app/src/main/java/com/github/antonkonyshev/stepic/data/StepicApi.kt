@@ -9,7 +9,8 @@ interface StepicApi {
     suspend fun fetchCourses(
         @Query("page") page: Long,
         @Query("page_size") pageSize: Int,
-        @Query("search") search: String?
+        @Query("search") search: String?,
+        @Query("order") order: String?
     ): CourseResponse
 
     companion object {

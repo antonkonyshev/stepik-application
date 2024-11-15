@@ -38,10 +38,12 @@ fun CourseListScreen(
     Column {
         CourseListFiltering(
             searchQuery = viewModel.courseRepository.searchQuery.collectAsStateWithLifecycle().value,
-            onSearch = viewModel::applySearchFilter
+            ordering = viewModel.courseRepository.ordering.collectAsStateWithLifecycle().value,
+            onSearch = viewModel::applySearchFilter,
+            toggleOrdering = viewModel::toggleOrdering
         )
 
-        LazyColumn(state = listState, modifier = Modifier.padding(12.dp)) {
+        LazyColumn(state = listState, modifier = Modifier) {
             items(courses, key = { it.id }) { course ->
                 CourseCard(course = course, toggleFavorite = viewModel::toggleFavorite)
             }

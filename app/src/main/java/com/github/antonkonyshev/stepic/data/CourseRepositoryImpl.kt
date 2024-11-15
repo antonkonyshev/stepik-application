@@ -13,13 +13,19 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
     override var hasPrevious: Boolean = false
     private val _searchQuery = MutableStateFlow("")
     override val searchQuery = _searchQuery.asStateFlow()
+    private val _ordering = MutableStateFlow(false)
+    override val ordering = _ordering.asStateFlow()
 
     override suspend fun getNext(): List<Course> {
         try {
             val response = api.fetchCourses(
                 page = ++page, pageSize = pageSize,
-                search = when(searchQuery.value.isNotBlank()) {
+                search = when (searchQuery.value.isNotBlank()) {
                     true -> searchQuery.value
+                    else -> null
+                },
+                order = when (ordering.value) {
+                    true -> "create_date"
                     else -> null
                 },
             )
@@ -43,8 +49,11 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
         try {
             val response = api.fetchCourses(
                 page = --page, pageSize = pageSize,
-                search = when(searchQuery.value.isNotBlank()) {
+                search = when (searchQuery.value.isNotBlank()) {
                     true -> searchQuery.value
+                    else -> null
+                }, order = when (ordering.value) {
+                    true -> "craete_date"
                     else -> null
                 }
             )
@@ -72,10 +81,15 @@ class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository {
 
     override fun clearFilters() {
         _searchQuery.value = ""
+        _ordering.value = false
     }
 
     override fun setSearchQuery(query: String) {
         _searchQuery.value = query
+    }
+
+    override fun setOrdering(order: Boolean) {
+        _ordering.value = order
     }
 
     companion object {

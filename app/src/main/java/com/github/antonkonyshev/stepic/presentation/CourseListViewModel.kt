@@ -107,6 +107,15 @@ class CourseListViewModel() : ViewModel(), KoinComponent {
         }
     }
 
+    fun toggleOrdering() {
+        courseRepository.setOrdering(!courseRepository.ordering.value)
+        courseRepository.clearPagination()
+        _courses.value = emptyList()
+        viewModelScope.launch(Dispatchers.IO) {
+            loadNext()
+        }
+    }
+
     fun toggleFavorite(course: Course) {
         TODO("implement")
     }

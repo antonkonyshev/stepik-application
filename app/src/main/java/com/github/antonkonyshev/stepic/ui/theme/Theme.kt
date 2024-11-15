@@ -25,6 +25,7 @@ private val DarkColorScheme = darkColorScheme(
     surfaceDim = GlassBackground,
     outline = GrayBorderColor,
     surfaceBright = GrayIndicationColor,
+    surfaceTint = Color.White,
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -40,6 +41,7 @@ private val LightColorScheme = lightColorScheme(
     surfaceDim = GlassBackground,
     outline = GrayBorderColor,
     surfaceBright = GrayIndicationColor,
+    surfaceTint = Color.White,
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),

@@ -1,4 +1,4 @@
-package com.github.antonkonyshev.stepic.presentation
+package com.github.antonkonyshev.stepic.presentation.courselist
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRightAlt
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Button
@@ -36,8 +36,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.github.antonkonyshev.stepic.R
@@ -47,9 +47,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.math.roundToInt
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun CourseCard(course: Course, toggleFavorite: (Course) -> Unit = {}) {
+fun CourseCard(
+    course: Course,
+    toggleFavorite: (Course) -> Unit = {},
+    navigateToCourseDetails: (Course) -> Unit = {},
+) {
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -61,88 +64,12 @@ fun CourseCard(course: Course, toggleFavorite: (Course) -> Unit = {}) {
             Modifier.padding(horizontal = 15.dp, vertical = 10.dp)
         }
 
-        Box(
+        CourseCover(
+            course = course,
             modifier = Modifier
                 .height(120.dp)
                 .fillMaxWidth()
-        ) {
-            GlideImage(
-                model = course.cover, contentDescription = course.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(120.dp)
-                    .padding(0.dp)
-                    .clip(RoundedCornerShape(12.dp))
-            )
-
-            FloatingActionButton(
-                onClick = {
-                    toggleFavorite(course)
-                },
-                containerColor = MaterialTheme.colorScheme.surfaceDim,
-                contentColor = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(15.dp)
-                    .size(34.dp)
-                    .clip(RoundedCornerShape(14.dp))
-            ) {
-                Icon(
-                    imageVector = when (course.is_favorite) {
-                        true -> Icons.Outlined.Bookmark
-                        else -> Icons.Outlined.BookmarkBorder
-                    },
-                    contentDescription = "Add to favorites",
-                    modifier = Modifier
-                        .size(16.dp)
-                        .padding(0.dp)
-                )
-            }
-
-            Row(
-                modifier = textPaddingsModifier.offset(y = 74.dp)
-            ) {
-                Surface(
-                    color = MaterialTheme.colorScheme.surfaceDim,
-                    modifier = Modifier.clip(RoundedCornerShape(12.dp))
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .height(intrinsicSize = IntrinsicSize.Max)
-                            .padding(horizontal = 8.dp, vertical = 3.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = "Rating",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier
-                                .size(16.dp)
-                                .padding(end = 5.dp)
-                        )
-                        Text(
-                            text = ((course.readiness * 100f).roundToInt() / 10f).toString(),
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-                }
-
-                AnimatedVisibility(visible = course.create_date != null) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.surfaceDim,
-                        modifier = Modifier
-                            .padding(start = 10.dp)
-                            .clip(RoundedCornerShape(12.dp))
-                    ) {
-                        val formatter = remember { SimpleDateFormat("d MMMM yyyy") }
-                        Text(
-                            text = formatter.format(course.create_date!!),
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                        )
-                    }
-                }
-            }
-        }
+        )
 
         Text(
             text = course.title,
@@ -176,7 +103,9 @@ fun CourseCard(course: Course, toggleFavorite: (Course) -> Unit = {}) {
             }
 
             Button(
-                onClick = {},
+                onClick = {
+                    navigateToCourseDetails(course)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Transparent,
                     contentColor = MaterialTheme.colorScheme.primary,
@@ -194,6 +123,142 @@ fun CourseCard(course: Course, toggleFavorite: (Course) -> Unit = {}) {
                     imageVector = Icons.AutoMirrored.Filled.ArrowRightAlt,
                     contentDescription = stringResource(R.string.details)
                 )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun CourseCover(
+    course: Course,
+    coverHeight: Dp = 120.dp,
+    detailed: Boolean = false,
+    modifier: Modifier = Modifier,
+    toggleFavorite: (Course) -> Unit = {}
+) {
+    Box(
+        modifier = Modifier
+            .height(coverHeight)
+            .fillMaxWidth()
+    ) {
+        GlideImage(
+            model = course.cover, contentDescription = course.title,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .height(coverHeight)
+                .padding(0.dp)
+                .clip(RoundedCornerShape(12.dp))
+        )
+
+        AnimatedVisibility(visible = detailed, modifier = Modifier.align(Alignment.TopStart)) {
+            FloatingActionButton(
+                onClick = {},
+                containerColor = MaterialTheme.colorScheme.surfaceTint,
+                contentColor = MaterialTheme.colorScheme.surface,
+                modifier = Modifier
+                    .padding(start = 15.dp, top = 35.dp, end = 5.dp, bottom = 5.dp)
+                    .size(44.dp)
+                    .clip(RoundedCornerShape(22.dp))
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.ArrowBack,
+                    contentDescription = stringResource(R.string.back),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(0.dp)
+                )
+            }
+        }
+
+        val bookmarkButtonModifier = when (detailed) {
+            true -> Modifier
+                .padding(start = 5.dp, top = 35.dp, end = 15.dp, bottom = 5.dp)
+                .size(44.dp)
+
+            else -> Modifier
+                .padding(15.dp)
+                .size(34.dp)
+        }.clip(RoundedCornerShape(22.dp)).align(Alignment.TopEnd)
+
+        FloatingActionButton(
+            onClick = {
+                toggleFavorite(course)
+            },
+            containerColor = when (detailed) {
+                true -> MaterialTheme.colorScheme.surfaceTint
+                else -> MaterialTheme.colorScheme.surfaceDim
+            },
+            contentColor = when (detailed) {
+                true -> MaterialTheme.colorScheme.surface
+                else -> MaterialTheme.colorScheme.onSurface
+            },
+            modifier = bookmarkButtonModifier
+        ) {
+            Icon(
+                imageVector = when (course.is_favorite) {
+                    true -> Icons.Outlined.Bookmark
+                    else -> Icons.Outlined.BookmarkBorder
+                },
+                contentDescription = "Add to favorites",
+                tint = when (detailed) {
+                    true -> MaterialTheme.colorScheme.surface
+                    else -> MaterialTheme.colorScheme.onSurface
+                },
+                modifier = Modifier
+                    .size(
+                        when (detailed) {
+                            true -> 24.dp
+                            else -> 16.dp
+                        }
+                    )
+                    .padding(0.dp)
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(horizontal = 15.dp, vertical = 10.dp)
+        ) {
+            Surface(
+                color = MaterialTheme.colorScheme.surfaceDim,
+                modifier = Modifier.clip(RoundedCornerShape(12.dp))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .height(intrinsicSize = IntrinsicSize.Max)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = "Rating",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier
+                            .size(16.dp)
+                            .padding(end = 5.dp)
+                    )
+                    Text(
+                        text = ((course.readiness * 100f).roundToInt() / 10f).toString(),
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+            }
+
+            AnimatedVisibility(visible = course.create_date != null) {
+                Surface(
+                    color = MaterialTheme.colorScheme.surfaceDim,
+                    modifier = Modifier
+                        .padding(start = 10.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                ) {
+                    val formatter = remember { SimpleDateFormat("d MMMM yyyy") }
+                    Text(
+                        text = formatter.format(course.create_date!!),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                    )
+                }
             }
         }
     }

@@ -19,9 +19,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.github.antonkonyshev.stepic.R
-import com.github.antonkonyshev.stepic.presentation.CourseListScreen
-import com.github.antonkonyshev.stepic.presentation.CourseListViewModel
+import com.github.antonkonyshev.stepic.presentation.courselist.CourseListScreen
+import com.github.antonkonyshev.stepic.presentation.courselist.CourseListViewModel
 import com.github.antonkonyshev.stepic.presentation.UiEvent
+import com.github.antonkonyshev.stepic.presentation.coursedetails.CourseDetailsScreen
 import com.github.antonkonyshev.stepic.presentation.getActivity
 
 sealed class StepicNavRouting(
@@ -85,8 +86,12 @@ fun StepicNavHost(
         composable(
             "${StepicNavRouting.route_course_details}?courseId={courseId}",
             arguments = listOf(navArgument("courseId") { defaultValue = "" })
-        ) {
-            CourseListScreen(modifier = modifier)
+        ) { entry ->
+            CourseDetailsScreen(
+                viewModel = courseListViewModel,
+                courseId = (entry.arguments?.getString("courseId") ?: "0").toLong(),
+                modifier = modifier
+            )
         }
 
         composable(StepicNavRouting.route_favorite) {

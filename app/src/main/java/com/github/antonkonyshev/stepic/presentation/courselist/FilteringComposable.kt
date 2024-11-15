@@ -1,4 +1,4 @@
-package com.github.antonkonyshev.stepic.presentation
+package com.github.antonkonyshev.stepic.presentation.courselist
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable

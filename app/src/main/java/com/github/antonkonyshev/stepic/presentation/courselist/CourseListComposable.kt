@@ -1,4 +1,4 @@
-package com.github.antonkonyshev.stepic.presentation
+package com.github.antonkonyshev.stepic.presentation.courselist
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.TweenSpec
@@ -29,6 +29,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.antonkonyshev.stepic.R
 import com.github.antonkonyshev.stepic.domain.Course
+import com.github.antonkonyshev.stepic.presentation.getActivity
+import com.github.antonkonyshev.stepic.presentation.navigation.StepicNavRouting
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
 import java.util.Date
 
@@ -41,6 +43,7 @@ fun CourseListScreen(
 ) {
     LaunchedEffect(favorite) {
         viewModel.changeScreen(favorite)
+        viewModel.selectCourse(null)
     }
 
     val listState = rememberLazyListState()
@@ -71,9 +74,19 @@ fun CourseListScreen(
 
         }
 
+        val ctx = LocalContext.current
         LazyColumn(state = listState, modifier = Modifier) {
             items(courses, key = { it.id }) { course ->
-                CourseCard(course = course, toggleFavorite = viewModel::toggleFavorite)
+                CourseCard(
+                    course = course,
+                    toggleFavorite = viewModel::toggleFavorite,
+                    navigateToCourseDetails = { course: Course ->
+                        viewModel.selectCourse(course)
+                        ctx.getActivity()?.emitUiEvent(
+                            StepicNavRouting.courseDetailsNavigationUiEvent(course.id)
+                        )
+                    }
+                )
             }
 
             item {

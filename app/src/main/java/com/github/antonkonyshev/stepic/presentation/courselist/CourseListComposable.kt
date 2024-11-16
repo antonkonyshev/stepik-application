@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
@@ -32,20 +33,21 @@ import com.github.antonkonyshev.stepic.domain.Course
 import com.github.antonkonyshev.stepic.presentation.getActivity
 import com.github.antonkonyshev.stepic.presentation.navigation.StepicNavRouting
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.util.Date
 
 @Composable
 fun CourseListScreen(
     viewModel: CourseListViewModel = viewModel(),
-    courses: List<Course> = viewModel.courses.collectAsStateWithLifecycle().value,
     favorite: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     LaunchedEffect(favorite) {
         viewModel.changeScreen(favorite)
-        viewModel.selectCourse(null)
     }
 
+    val ctx = LocalContext.current
     val listState = rememberLazyListState()
 
     Column {
@@ -71,34 +73,19 @@ fun CourseListScreen(
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-
         }
 
-        val ctx = LocalContext.current
-        LazyColumn(state = listState, modifier = Modifier) {
-            items(courses, key = { it.id }) { course ->
-                CourseCard(
-                    course = course,
-                    toggleFavorite = viewModel::toggleFavorite,
-                    navigateToCourseDetails = { course: Course ->
-                        viewModel.selectCourse(course)
-                        ctx.getActivity()?.emitUiEvent(
-                            StepicNavRouting.courseDetailsNavigationUiEvent(course.id)
-                        )
-                    }
-                )
-            }
-
-            item {
-                LoadingSpinner(viewModel.loading.collectAsStateWithLifecycle().value)
-            }
-        }
+        CourseList(
+            courses = viewModel.courses.collectAsStateWithLifecycle().value,
+            listState = listState,
+            toggleFavorite = viewModel::toggleFavorite,
+            loading = viewModel.loading,
+        )
     }
 
-    val ctx = LocalContext.current
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }.collect {
-            if (it != null && it >= courses.size - 2) {
+            if (it != null && it >= viewModel.courses.value.size - 2) {
                 viewModel.loadFurther(
                     viewModel::loadNext, listState, ctx.getActivity()?.lifecycleScope
                 )
@@ -110,6 +97,33 @@ fun CourseListScreen(
                     viewModel::loadPrevious, listState, ctx.getActivity()?.lifecycleScope
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun CourseList(
+    courses: List<Course>,
+    loading: StateFlow<Boolean>,
+    listState: LazyListState = rememberLazyListState(),
+    toggleFavorite: (Course) -> Unit = {},
+) {
+    val ctx = LocalContext.current
+    LazyColumn(state = listState, modifier = Modifier) {
+        items(courses, key = { it.id }) { course ->
+            CourseCard(
+                course = course,
+                toggleFavorite = toggleFavorite,
+                navigateToCourseDetails = { course: Course ->
+                    ctx.getActivity()?.emitUiEvent(
+                        StepicNavRouting.courseDetailsNavigationUiEvent(course.id)
+                    )
+                }
+            )
+        }
+
+        item {
+            LoadingSpinner(loading.collectAsStateWithLifecycle().value)
         }
     }
 }
@@ -132,39 +146,50 @@ fun LoadingSpinner(loading: Boolean) {
     }
 }
 
-@Preview(showBackground = true, widthDp = 400, heightDp = 800)
+@Preview(showBackground = true)
 @Composable
-fun CourseListScreenPreview() {
-    val viewModel = CourseListViewModel()
-    StepicTheme(darkTheme = true) {
-        CourseListScreen(
-            viewModel = viewModel,
+fun CourseListPreview() {
+    StepicTheme(darkTheme = true, dynamicColor = false) {
+        CourseList(
             courses = listOf(
                 Course(
                     1, "Test 1", "Testing course",
+                    "Testing description",
                     "https://cdn.stepik.net/media/cache/images/courses/221585/cover_EJp9uXA/e39ef81b8985462b5f92f9e3a41e9afb.jpg",
+                    canonical_url = "https://stepik.org/course/1",
+                    continue_url = "/course/1/continue",
                     readiness = 0.89f,
-                    is_paid = false,
-                    display_price = "-",
-                    create_date = Date()
+                    is_paid = true,
+                    display_price = "15000 ₽",
+                    create_date = Date(),
+                    is_favorite = false,
                 ),
                 Course(
-                    1, "Test 2", "Testing course",
+                    2, "Test 2", "Testing course",
+                    "Testing description",
                     "https://cdn.stepik.net/media/cache/images/courses/221585/cover_EJp9uXA/e39ef81b8985462b5f92f9e3a41e9afb.jpg",
+                    canonical_url = "https://stepik.org/course/1",
+                    continue_url = "/course/1/continue",
                     readiness = 0.91f,
                     is_paid = false,
                     display_price = "-",
-                    create_date = Date()
+                    create_date = Date(),
+                    is_favorite = true,
                 ),
                 Course(
-                    1, "Test 1", "Testing course",
+                    3, "Test 1", "Testing course",
+                    "Testing description",
                     "https://cdn.stepik.net/media/cache/images/courses/221585/cover_EJp9uXA/e39ef81b8985462b5f92f9e3a41e9afb.jpg",
+                    canonical_url = "https://stepik.org/course/1",
+                    continue_url = "/course/1/continue",
                     readiness = 0.75f,
                     is_paid = false,
                     display_price = "-",
-                    create_date = Date()
+                    create_date = Date(),
+                    is_favorite = false,
                 )
-            )
+            ),
+            loading = MutableStateFlow(false),
         )
     }
 }

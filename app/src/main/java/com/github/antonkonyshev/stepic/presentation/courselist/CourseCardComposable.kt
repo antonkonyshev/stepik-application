@@ -1,5 +1,6 @@
 package com.github.antonkonyshev.stepic.presentation.courselist
 
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowRightAlt
@@ -134,6 +136,7 @@ fun CourseCover(
     course: Course,
     coverHeight: Dp = 120.dp,
     detailed: Boolean = false,
+    cornersRadius: Dp = 12.dp,
     modifier: Modifier = Modifier,
     toggleFavorite: (Course) -> Unit = {}
 ) {
@@ -148,18 +151,22 @@ fun CourseCover(
             modifier = Modifier
                 .height(coverHeight)
                 .padding(0.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(cornersRadius))
         )
 
-        AnimatedVisibility(visible = detailed, modifier = Modifier.align(Alignment.TopStart)) {
+        val backPressDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+        AnimatedVisibility(
+            visible = detailed && backPressDispatcher != null,
+            modifier = Modifier.align(Alignment.TopStart)
+        ) {
             FloatingActionButton(
-                onClick = {},
+                onClick = backPressDispatcher!!::onBackPressed,
                 containerColor = MaterialTheme.colorScheme.surfaceTint,
                 contentColor = MaterialTheme.colorScheme.surface,
+                shape = CircleShape,
                 modifier = Modifier
                     .padding(start = 15.dp, top = 35.dp, end = 5.dp, bottom = 5.dp)
                     .size(44.dp)
-                    .clip(RoundedCornerShape(22.dp))
             ) {
                 Icon(
                     imageVector = Icons.Outlined.ArrowBack,
@@ -179,7 +186,7 @@ fun CourseCover(
             else -> Modifier
                 .padding(15.dp)
                 .size(34.dp)
-        }.clip(RoundedCornerShape(22.dp)).align(Alignment.TopEnd)
+        }.align(Alignment.TopEnd)
 
         FloatingActionButton(
             onClick = {
@@ -193,6 +200,7 @@ fun CourseCover(
                 true -> MaterialTheme.colorScheme.surface
                 else -> MaterialTheme.colorScheme.onSurface
             },
+            shape = CircleShape,
             modifier = bookmarkButtonModifier
         ) {
             Icon(
@@ -273,7 +281,10 @@ fun CourseCardPreview() {
                 id = 123L,
                 title = "Testing title",
                 summary = "Testing summary",
+                description = "Testing description",
                 cover = "",
+                canonical_url = "https://stepik.org/course/1",
+                continue_url = "/course/1/continue",
                 readiness = 0.89f,
                 is_paid = true,
                 display_price = "15000 ₽",
@@ -292,7 +303,10 @@ fun CourseCardFavoriteAndFreePreview() {
                 id = 123L,
                 title = "Testing title",
                 summary = "Testing summary",
+                description = "Testing description",
                 cover = "",
+                canonical_url = "https://stepik.org/course/1",
+                continue_url = "/course/1/continue",
                 is_favorite = true,
                 readiness = 0.75f,
                 is_paid = false,

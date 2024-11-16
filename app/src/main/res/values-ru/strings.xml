@@ -8,4 +8,8 @@
     <string name="main">Главная</string>
     <string name="search_courses">Искать курсы</string>
     <string name="filters">Фильтры</string>
+    <string name="back">Назад</string>
+    <string name="about_the_course">О курсе</string>
+    <string name="go_to_platform">Перейти на платформу</string>
+    <string name="start_the_course">Начать курс</string>
 </resources>

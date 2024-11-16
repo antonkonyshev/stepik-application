@@ -17,8 +17,6 @@ import kotlin.reflect.KSuspendFunction1
 class CourseListViewModel() : ViewModel(), KoinComponent {
     private val _courses = MutableStateFlow<List<Course>>(emptyList())
     val courses = _courses.asStateFlow()
-    private val _course = MutableStateFlow<Course?>(null)
-    val course = _course.asStateFlow()
     private val _loading = MutableStateFlow<Boolean>(true)
     val loading = _loading.asStateFlow()
 
@@ -126,10 +124,6 @@ class CourseListViewModel() : ViewModel(), KoinComponent {
         viewModelScope.launch(Dispatchers.IO) {
             loadNext()
         }
-    }
-
-    fun selectCourse(course: Course?) {
-        _course.value = course
     }
 
     fun toggleFavorite(course: Course) {

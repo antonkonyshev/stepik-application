@@ -9,4 +9,7 @@
     <string name="search_courses">Search courses</string>
     <string name="filters">Filters</string>
     <string name="back">Back</string>
+    <string name="about_the_course">About the course</string>
+    <string name="go_to_platform">Go to platform</string>
+    <string name="start_the_course">Start the course</string>
 </resources>

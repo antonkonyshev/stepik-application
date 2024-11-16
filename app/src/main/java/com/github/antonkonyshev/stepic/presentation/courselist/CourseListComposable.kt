@@ -29,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.antonkonyshev.stepic.R
-import com.github.antonkonyshev.stepic.domain.Course
+import com.github.antonkonyshev.stepic.domain.model.Course
 import com.github.antonkonyshev.stepic.presentation.getActivity
 import com.github.antonkonyshev.stepic.presentation.navigation.StepicNavRouting
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
@@ -162,6 +162,7 @@ fun CourseListPreview() {
                     is_paid = true,
                     display_price = "15000 ₽",
                     create_date = Date(),
+                    authors = listOf(123L),
                     is_favorite = false,
                 ),
                 Course(
@@ -174,6 +175,7 @@ fun CourseListPreview() {
                     is_paid = false,
                     display_price = "-",
                     create_date = Date(),
+                    authors = listOf(123L),
                     is_favorite = true,
                 ),
                 Course(
@@ -186,6 +188,7 @@ fun CourseListPreview() {
                     is_paid = false,
                     display_price = "-",
                     create_date = Date(),
+                    authors = emptyList(),
                     is_favorite = false,
                 )
             ),

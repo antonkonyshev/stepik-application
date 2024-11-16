@@ -1,5 +1,6 @@
-package com.github.antonkonyshev.stepic.domain
+package com.github.antonkonyshev.stepic.domain.repository
 
+import com.github.antonkonyshev.stepic.domain.model.Course
 import kotlinx.coroutines.flow.StateFlow
 
 interface CourseRepository {

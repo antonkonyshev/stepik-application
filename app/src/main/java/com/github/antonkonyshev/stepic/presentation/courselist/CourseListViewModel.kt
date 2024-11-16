@@ -3,8 +3,8 @@ package com.github.antonkonyshev.stepic.presentation.courselist
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.antonkonyshev.stepic.domain.Course
-import com.github.antonkonyshev.stepic.domain.CourseRepository
+import com.github.antonkonyshev.stepic.domain.model.Course
+import com.github.antonkonyshev.stepic.domain.repository.CourseRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

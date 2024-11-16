@@ -1,8 +1,10 @@
 package com.github.antonkonyshev.stepic.di
 
-import com.github.antonkonyshev.stepic.data.CourseRepositoryImpl
-import com.github.antonkonyshev.stepic.data.StepicApi
-import com.github.antonkonyshev.stepic.domain.CourseRepository
+import com.github.antonkonyshev.stepic.data.repository.CourseRepositoryImpl
+import com.github.antonkonyshev.stepic.data.network.StepicApi
+import com.github.antonkonyshev.stepic.data.repository.AuthorRepositoryImpl
+import com.github.antonkonyshev.stepic.domain.repository.AuthorRepository
+import com.github.antonkonyshev.stepic.domain.repository.CourseRepository
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,5 +31,9 @@ val networkModule = module {
 
     single<CourseRepository> {
         CourseRepositoryImpl(get())
+    }
+
+    single<AuthorRepository> {
+        AuthorRepositoryImpl(get())
     }
 }

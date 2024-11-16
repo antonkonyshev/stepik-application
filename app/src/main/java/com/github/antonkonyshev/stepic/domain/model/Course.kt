@@ -1,4 +1,4 @@
-package com.github.antonkonyshev.stepic.domain
+package com.github.antonkonyshev.stepic.domain.model
 
 import java.util.Date
 
@@ -14,6 +14,7 @@ data class Course(
     val is_paid: Boolean,
     val display_price: String,
     val create_date: Date?,
+    val authors: List<Long>,
     var is_favorite: Boolean = false,
 ) {
     fun absoluteContinueUrl(): String {

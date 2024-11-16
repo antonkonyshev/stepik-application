@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.github.antonkonyshev.stepic.R
-import com.github.antonkonyshev.stepic.domain.Course
+import com.github.antonkonyshev.stepic.domain.model.Course
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -285,11 +285,12 @@ fun CourseCardPreview() {
                 cover = "",
                 canonical_url = "https://stepik.org/course/1",
                 continue_url = "/course/1/continue",
+                authors = listOf(123L),
                 readiness = 0.89f,
                 is_paid = true,
                 display_price = "15000 ₽",
                 create_date = Date(),
-            )
+            ),
         )
     }
 }
@@ -307,12 +308,13 @@ fun CourseCardFavoriteAndFreePreview() {
                 cover = "",
                 canonical_url = "https://stepik.org/course/1",
                 continue_url = "/course/1/continue",
+                authors = emptyList(),
                 is_favorite = true,
                 readiness = 0.75f,
                 is_paid = false,
                 display_price = "-",
                 create_date = Date(),
-            )
+            ),
         )
     }
 }

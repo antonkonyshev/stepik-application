@@ -1,33 +1,53 @@
 package com.github.antonkonyshev.stepic.presentation.coursedetails
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.TweenSpec
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.github.antonkonyshev.stepic.R
-import com.github.antonkonyshev.stepic.domain.Course
+import com.github.antonkonyshev.stepic.domain.model.Author
+import com.github.antonkonyshev.stepic.domain.model.Course
+import com.github.antonkonyshev.stepic.domain.repository.AuthorRepository
 import com.github.antonkonyshev.stepic.presentation.courselist.CourseCover
 import com.github.antonkonyshev.stepic.presentation.courselist.CourseListViewModel
 import com.github.antonkonyshev.stepic.presentation.getActivity
 import com.github.antonkonyshev.stepic.presentation.navigation.StepicNavRouting
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 import java.util.Date
 
 @Composable
@@ -39,17 +59,33 @@ fun CourseDetailsScreen(
     val course = remember(courseId) { viewModel.courses.value.firstOrNull { it.id == courseId } }
 
     if (course == null) {
-        // TODO: Check id and load from API
         LocalContext.current.getActivity()?.emitUiEvent(
             "NavigateTo", StepicNavRouting.route_course_list
         )
     } else {
-        CourseDetails(course, modifier = Modifier.padding(bottom = 60.dp))
+        val ctx = LocalContext.current
+        var author by remember { mutableStateOf<Author?>(null) }
+        if (course.authors.isNotEmpty()) {
+            LaunchedEffect(course.authors[0]) {
+                ctx.getActivity()?.lifecycleScope?.launch(Dispatchers.IO) {
+                    val authorRepository: AuthorRepository =
+                        (ctx.applicationContext as KoinComponent)
+                            .getKoin().get()
+                    author = authorRepository.getAuthorById(course.authors[0])
+                }
+            }
+        }
+
+        CourseDetails(course, author, modifier = Modifier.padding(bottom = 60.dp))
     }
 }
 
 @Composable
-fun CourseDetails(course: Course, modifier: Modifier = Modifier) {
+fun CourseDetails(
+    course: Course,
+    author: Author?,
+    modifier: Modifier = Modifier
+) {
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier.verticalScroll(scrollState)
@@ -64,10 +100,12 @@ fun CourseDetails(course: Course, modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(vertical = 15.dp)
             )
 
-            Card(
-
+            AnimatedVisibility(
+                visible = author is Author,
+                enter = expandVertically(TweenSpec(200)),
+                exit = shrinkVertically(TweenSpec(200))
             ) {
-
+                AuthorCard(author!!)
             }
 
             val uriHandler = LocalUriHandler.current
@@ -124,6 +162,35 @@ fun CourseDetails(course: Course, modifier: Modifier = Modifier) {
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun AuthorCard(author: Author) {
+    Row(
+        modifier = Modifier.padding(bottom = 15.dp)
+    ) {
+        if (author.avatar.isNotBlank()) {
+            TODO("Render SVG or convert to bitmap")
+            GlideImage(
+                model = author.avatar, contentDescription = author.full_name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .padding(end = 10.dp)
+            )
+        }
+
+        Column {
+            Text(
+                text = stringResource(R.string.author),
+                style = MaterialTheme.typography.labelMedium
+            )
+
+            Text(text = author.full_name, style = MaterialTheme.typography.titleMedium)
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailsPreview() {
@@ -134,8 +201,8 @@ fun CourseDetailsPreview() {
                 "<p>Testing description</p>", "",
                 "https://stepik.org/course/1/", "/course/1/continue",
                 0.89123f, is_paid = true, display_price = "15000 ₽", create_date = Date(),
-                is_favorite = false
-            )
+                authors = listOf(123L), is_favorite = false
+            ), Author(123L, "Testing Author", "")
         )
     }
 }
@@ -150,8 +217,8 @@ fun CourseDetailsOfFreeAndFavoritePreview() {
                 "<p>Testing description</p>", "",
                 "https://stepik.org/course/1/", "/course/1/continue",
                 0.756f, is_paid = false, display_price = "-", create_date = Date(),
-                is_favorite = true
-            )
+                authors = listOf(123L), is_favorite = true
+            ), null
         )
     }
 }

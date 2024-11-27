@@ -1,6 +1,7 @@
 package com.github.antonkonyshev.stepic
 
 import android.app.Application
+import com.github.antonkonyshev.stepic.di.authModule
 import com.github.antonkonyshev.stepic.di.databaseModule
 import com.github.antonkonyshev.stepic.di.networkModule
 import org.koin.android.ext.koin.androidContext
@@ -14,7 +15,7 @@ class StepicApplication : Application(), KoinComponent {
 
         startKoin {
             androidContext(this@StepicApplication)
-            modules(databaseModule, networkModule)
+            modules(databaseModule, networkModule, authModule)
         }
     }
 

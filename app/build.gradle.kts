@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.retrofit)
     implementation(libs.logging.interceptor)
+    implementation(libs.okhttp.java.net.cookiejar)
     implementation(libs.okhttp)
     implementation(libs.koin.core)
     implementation(libs.koin.android)

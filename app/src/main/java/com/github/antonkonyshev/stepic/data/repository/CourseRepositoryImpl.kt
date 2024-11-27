@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class CourseRepositoryImpl(private val api: StepicApi) : CourseRepository, KoinComponent {
+class CourseRepositoryImpl() : CourseRepository, KoinComponent {
+    private val api: StepicApi by inject()
     private val courseDao: CourseDao by inject()
 
     private var page: Long = 0

@@ -129,15 +129,16 @@ fun CourseList(
 }
 
 @Composable
-fun LoadingSpinner(loading: Boolean) {
+fun LoadingSpinner(loading: Boolean, modifier: Modifier = Modifier) {
     AnimatedVisibility(
         visible = loading,
         enter = fadeIn(animationSpec = TweenSpec(durationMillis = 200)),
-        exit = fadeOut(animationSpec = TweenSpec(durationMillis = 200))
+        exit = fadeOut(animationSpec = TweenSpec(durationMillis = 200)),
+        modifier = modifier
     ) {
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .padding(15.dp)
         ) {

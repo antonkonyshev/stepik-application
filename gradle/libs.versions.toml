@@ -17,6 +17,7 @@ composeBom = "2024.04.01"
 materialIconsExtendedAndroid = "1.7.5"
 navigationCompose = "2.8.4"
 okhttp = "4.12.0"
+okhttpJavaNetCookiejar = "5.0.0-alpha.14"
 retrofit = "2.11.0"
 room = "2.6.1"
 
@@ -53,6 +54,7 @@ koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+okhttp-java-net-cookiejar = { module = "com.squareup.okhttp3:okhttp-java-net-cookiejar", version.ref = "okhttpJavaNetCookiejar" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]

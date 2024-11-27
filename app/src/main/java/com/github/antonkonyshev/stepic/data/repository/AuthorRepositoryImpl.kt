@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class AuthorRepositoryImpl(private val api: StepicApi) : AuthorRepository, KoinComponent {
+class AuthorRepositoryImpl() : AuthorRepository, KoinComponent {
+    private val api: StepicApi by inject()
     private val authorDao: AuthorDao by inject()
 
     override suspend fun getAuthorById(authorId: Long): Author? {

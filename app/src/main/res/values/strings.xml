@@ -13,4 +13,10 @@
     <string name="go_to_platform">Go to platform</string>
     <string name="start_the_course">Start the course</string>
     <string name="author">Author</string>
+    <string name="show_password">Show password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="password">Password</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="authorization">Authorization</string>
 </resources>

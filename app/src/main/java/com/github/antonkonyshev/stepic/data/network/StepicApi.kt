@@ -28,6 +28,9 @@ interface StepicApi {
     @Headers("Referer: https://stepik.org/")
     suspend fun login(@Body credentials: Credentials): Response<Any>
 
+    @GET("stepics/{id}")
+    suspend fun loadAccount(@Path("id") id: Long): UsersResponse
+
     companion object {
         const val BASE_URL = "https://stepik.org/api/"
     }

@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.github.antonkonyshev.stepic.R
+import com.github.antonkonyshev.stepic.domain.model.Author
 import com.github.antonkonyshev.stepic.presentation.courselist.LoadingSpinner
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
 
@@ -45,20 +46,33 @@ import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
 fun AccountScreen(viewModel: AccountViewModel = viewModel(), modifier: Modifier = Modifier) {
 
     if (viewModel.loading.collectAsStateWithLifecycle().value) {
-        AccountDetails()
+        LoadingSpinner(
+            viewModel.loading.collectAsStateWithLifecycle().value,
+            modifier = Modifier.fillMaxSize()
+        )
     } else {
-        AuthenticationForm(onSubmit = viewModel::authenticate)
+        if (
+            viewModel.authRepository.authenticated.collectAsStateWithLifecycle().value &&
+            viewModel.authRepository.account.collectAsStateWithLifecycle().value != null
+        ) {
+            AccountDetails(viewModel.authRepository.account.collectAsStateWithLifecycle().value!!)
+        } else {
+            AuthenticationForm(onSubmit = viewModel::authenticate)
+        }
     }
 
-    LoadingSpinner(
-        viewModel.loading.collectAsStateWithLifecycle().value,
-        modifier = Modifier.fillMaxSize()
-    )
 }
 
 @Composable
-fun AccountDetails() {
-
+fun AccountDetails(account: Author) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = account.full_name,
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
+    }
 }
 
 @Composable
@@ -169,5 +183,19 @@ fun AuthenticationForm(onSubmit: (String, String) -> Unit = { _, _ -> }) {
 fun AuthenticationFormPreview() {
     StepicTheme(darkTheme = true, dynamicColor = false) {
         AuthenticationForm()
+    }
+}
+
+@Preview(showBackground = true, widthDp = 400, heightDp = 400)
+@Composable
+fun AccountScreenPreview() {
+    StepicTheme(darkTheme = true, dynamicColor = false) {
+        AccountDetails(
+            Author(
+                id = 123L,
+                full_name = "Testing Test",
+                avatar = "https://stepik.org/users/992043824/7ab46b3f62579386c21166eece2c443869012cd1/avatar.svg"
+            )
+        )
     }
 }

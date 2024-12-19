@@ -40,8 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import com.github.antonkonyshev.stepic.R
 import com.github.antonkonyshev.stepic.domain.model.Course
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
@@ -130,7 +129,6 @@ fun CourseCard(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CourseCover(
     course: Course,
@@ -145,8 +143,9 @@ fun CourseCover(
             .height(coverHeight)
             .fillMaxWidth()
     ) {
-        GlideImage(
-            model = course.cover, contentDescription = course.title,
+        AsyncImage(
+            model = course.cover,
+            contentDescription = course.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .height(coverHeight)

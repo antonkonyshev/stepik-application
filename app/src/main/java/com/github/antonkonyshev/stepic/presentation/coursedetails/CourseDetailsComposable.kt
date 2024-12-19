@@ -34,8 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import com.github.antonkonyshev.stepic.R
 import com.github.antonkonyshev.stepic.domain.model.Author
 import com.github.antonkonyshev.stepic.domain.model.Course
@@ -76,7 +75,7 @@ fun CourseDetailsScreen(
             }
         }
 
-        CourseDetails(course, author, modifier = Modifier.padding(bottom = 60.dp))
+        CourseDetails(course, author, modifier = modifier.padding(bottom = 60.dp))
     }
 }
 
@@ -162,25 +161,25 @@ fun CourseDetails(
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun AuthorCard(author: Author) {
     Row(
         modifier = Modifier.padding(bottom = 15.dp)
     ) {
         if (author.avatar.isNotBlank()) {
-            TODO("Render SVG or convert to bitmap")
-            GlideImage(
-                model = author.avatar, contentDescription = author.full_name,
-                contentScale = ContentScale.Crop,
+            AsyncImage(
+                model = author.avatar,
+                contentDescription = author.full_name,
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(20.dp))
-                    .padding(end = 10.dp)
             )
         }
 
-        Column {
+        Column(
+            modifier = Modifier.padding(start = 10.dp)
+        ) {
             Text(
                 text = stringResource(R.string.author),
                 style = MaterialTheme.typography.labelMedium

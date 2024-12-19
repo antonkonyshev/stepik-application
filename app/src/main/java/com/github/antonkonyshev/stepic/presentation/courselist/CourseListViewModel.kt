@@ -34,7 +34,7 @@ class CourseListViewModel() : ViewModel(), KoinComponent {
         val newCourses = courseRepository.getNext()
         newCourses.filter { it.id !in courses.value.map { it.id } }
         appendCourses(newCourses)
-        if (courses.value.size < 10) {
+        if (courses.value.size < 10 && courseRepository.hasNext) {
             loadNext(onLoaded)
         } else {
             _loading.value = false
@@ -127,6 +127,9 @@ class CourseListViewModel() : ViewModel(), KoinComponent {
     }
 
     fun toggleFavorite(course: Course) {
-        TODO("implement")
+        course.is_favorite = !course.is_favorite
+        viewModelScope.launch(Dispatchers.IO) {
+            courseRepository.updateBookmark(course)
+        }
     }
 }

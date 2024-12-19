@@ -17,4 +17,5 @@ interface CourseRepository {
     fun setSearchQuery(query: String)
     fun setOrdering(order: Boolean)
     fun setFavorite(favorite: Boolean)
+    suspend fun updateBookmark(course: Course)
 }

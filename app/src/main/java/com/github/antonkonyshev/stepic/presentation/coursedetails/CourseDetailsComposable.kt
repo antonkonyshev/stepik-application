@@ -75,7 +75,12 @@ fun CourseDetailsScreen(
             }
         }
 
-        CourseDetails(course, author, modifier = modifier.padding(bottom = 60.dp))
+        CourseDetails(
+            course,
+            author,
+            toggleFavorite = viewModel::toggleFavorite,
+            modifier = modifier.padding(bottom = 60.dp)
+        )
     }
 }
 
@@ -83,13 +88,20 @@ fun CourseDetailsScreen(
 fun CourseDetails(
     course: Course,
     author: Author?,
+    toggleFavorite: (Course) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier.verticalScroll(scrollState)
     ) {
-        CourseCover(course, coverHeight = 240.dp, detailed = true, cornersRadius = 0.dp)
+        CourseCover(
+            course,
+            coverHeight = 240.dp,
+            detailed = true,
+            cornersRadius = 0.dp,
+            toggleFavorite = toggleFavorite
+        )
 
         Column(
             modifier = Modifier.padding(horizontal = 15.dp)

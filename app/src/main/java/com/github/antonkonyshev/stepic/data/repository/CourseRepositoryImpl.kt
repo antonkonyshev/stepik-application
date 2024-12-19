@@ -4,6 +4,8 @@ import android.util.Log
 import com.github.antonkonyshev.stepic.data.database.CourseDao
 import com.github.antonkonyshev.stepic.data.database.CourseMapper
 import com.github.antonkonyshev.stepic.data.network.StepicApi
+import com.github.antonkonyshev.stepic.data.network.WishList
+import com.github.antonkonyshev.stepic.data.network.WishListPayload
 import com.github.antonkonyshev.stepic.domain.model.Course
 import com.github.antonkonyshev.stepic.domain.repository.CourseRepository
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +13,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -99,6 +102,8 @@ class CourseRepositoryImpl() : CourseRepository, KoinComponent {
             // we get "has_next" equal to false or some content.
             if (courses.isEmpty() && hasNext) {
                 courses = getNext()
+            } else {
+                supervisorScope { launch { loadFavoriteAttributes(courses) } }
             }
 
             return courses
@@ -120,6 +125,8 @@ class CourseRepositoryImpl() : CourseRepository, KoinComponent {
             // we get "has_previous" equal to false or some content.
             if (courses.isEmpty() && hasPrevious) {
                 courses = getPrevious()
+            } else {
+                supervisorScope { launch { loadFavoriteAttributes(courses) } }
             }
 
             return courses
@@ -127,6 +134,10 @@ class CourseRepositoryImpl() : CourseRepository, KoinComponent {
             Log.e(TAG, "Error on courses list loading: ${err.toString()}")
             return emptyList()
         }
+    }
+
+    private suspend fun loadFavoriteAttributes(courses: List<Course>) {
+        courses.forEach { it.is_favorite = courseDao.getFavoriteAttribute(it.id) }
     }
 
     override fun clearPagination() {
@@ -150,6 +161,19 @@ class CourseRepositoryImpl() : CourseRepository, KoinComponent {
 
     override fun setFavorite(newFavorite: Boolean) {
         favorite = newFavorite
+    }
+
+    override suspend fun updateBookmark(course: Course) {
+        try {
+            courseDao.setFavorite(course.id, course.is_favorite)
+            if (course.is_favorite) {
+                api.addBookmark(WishListPayload(wishList = WishList(course = course.id.toString())))
+            } else {
+                api.deleteBookmark(course.id)
+            }
+        } catch (err: Exception) {
+            Log.e(TAG, "Error on a course bookmark setting: ${err.toString()}")
+        }
     }
 
     companion object {

@@ -110,7 +110,7 @@ fun CourseList(
 ) {
     val ctx = LocalContext.current
     LazyColumn(state = listState, modifier = Modifier) {
-        items(courses, key = { it.id }) { course ->
+        items(courses) { course ->
             CourseCard(
                 course = course,
                 toggleFavorite = toggleFavorite,

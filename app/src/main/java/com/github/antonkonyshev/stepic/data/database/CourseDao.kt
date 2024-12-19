@@ -23,13 +23,13 @@ interface CourseDao {
 
     @Query(
         "select * from course where is_favorite = true order by create_date desc " +
-                "limit :pageSize offset :page * :pageSize"
+                "limit :pageSize offset (:page - 1) * :pageSize"
     )
     suspend fun getFavoriteCourses(page: Long, pageSize: Int): List<CourseData>
 
     @Query(
         "select * from course where is_favorite = true order by create_date asc " +
-                "limit :pageSize offset :page * :pageSize"
+                "limit :pageSize offset (:page - 1) * :pageSize"
     )
     suspend fun getFavoriteCoursesReversed(page: Long, pageSize: Int): List<CourseData>
 
@@ -44,6 +44,12 @@ interface CourseDao {
                 "limit :pageSize offset :page * :pageSize"
     )
     suspend fun getCoursesReversed(page: Long, pageSize: Int): List<CourseData>
+
+    @Query("update course set is_favorite = :favorite where id = :id")
+    suspend fun setFavorite(id: Long, favorite: Boolean)
+
+    @Query("select is_favorite from course where id = :id limit 1")
+    suspend fun getFavoriteAttribute(id: Long): Boolean
 }
 
 @Entity(tableName = "course")

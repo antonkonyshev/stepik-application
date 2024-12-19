@@ -29,7 +29,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,6 +70,7 @@ fun CourseCard(
 
         CourseCover(
             course = course,
+            toggleFavorite = toggleFavorite,
             modifier = Modifier
                 .height(120.dp)
                 .fillMaxWidth()
@@ -187,9 +191,11 @@ fun CourseCover(
                 .size(34.dp)
         }.align(Alignment.TopEnd)
 
+        var bookmarked by remember { mutableStateOf(course.is_favorite) }
         FloatingActionButton(
             onClick = {
                 toggleFavorite(course)
+                bookmarked = !bookmarked
             },
             containerColor = when (detailed) {
                 true -> MaterialTheme.colorScheme.surfaceTint
@@ -203,7 +209,7 @@ fun CourseCover(
             modifier = bookmarkButtonModifier
         ) {
             Icon(
-                imageVector = when (course.is_favorite) {
+                imageVector = when (bookmarked) {
                     true -> Icons.Outlined.Bookmark
                     else -> Icons.Outlined.BookmarkBorder
                 },
@@ -245,6 +251,7 @@ fun CourseCover(
                             .size(16.dp)
                             .padding(end = 5.dp)
                     )
+
                     Text(
                         text = ((course.readiness * 100f).roundToInt() / 10f).toString(),
                         style = MaterialTheme.typography.bodySmall,

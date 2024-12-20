@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
 fun Context.getActivity(): MainActivity? = when (this) {
     is MainActivity -> this
-    is ContextWrapper -> baseContext.getActivity() as MainActivity
+    is ContextWrapper -> baseContext.getActivity()
     else -> null
 }
 

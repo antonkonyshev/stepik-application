@@ -22,13 +22,6 @@ class CourseListViewModel() : ViewModel(), KoinComponent {
 
     val courseRepository: CourseRepository by inject()
 
-    init {
-        courseRepository.clearPagination()
-        viewModelScope.launch(Dispatchers.IO) {
-            loadNext()
-        }
-    }
-
     suspend fun loadNext(onLoaded: () -> Unit = {}) {
         _loading.value = true
         val newCourses = courseRepository.getNext()

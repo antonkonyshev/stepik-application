@@ -18,4 +18,5 @@
     <string name="sign_in">Войти</string>
     <string name="password">Пароль</string>
     <string name="authorization">Авторизация</string>
+    <string name="by_creation_date">По дате добавления</string>
 </resources>

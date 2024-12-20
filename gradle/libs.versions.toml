@@ -2,8 +2,10 @@
 agp = "8.7.3"
 appcompat = "1.7.0"
 coil = "3.0.4"
+hamcrestAll = "latest.release"
 koinAnnotations = "1.4.0"
 koinCore = "4.0.0"
+koinTest = "latest.release"
 kotlin = "2.0.0"
 ksp = "2.0.21-1.0.25"
 coreKtx = "1.15.0"
@@ -14,11 +16,17 @@ lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.9.3"
 composeBom = "2024.04.01"
 materialIconsExtendedAndroid = "1.7.5"
+mockitoCore = "latest.release"
+mockitoKotlin = "latest.release"
+mockwebserver = "latest.release"
 navigationCompose = "2.8.4"
 okhttp = "4.12.0"
 okhttpJavaNetCookiejar = "5.0.0-alpha.14"
 retrofit = "2.11.0"
+robolectric = "latest.release"
 room = "2.6.1"
+uiTestJunit4 = "latest.release"
+uiTestManifest = "latest.release"
 
 [libraries]
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
@@ -36,6 +44,7 @@ coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+hamcrest-all = { module = "org.hamcrest:hamcrest-all", version.ref = "hamcrestAll" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -52,10 +61,18 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinCore" }
 koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koinAnnotations" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinCore" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koinTest" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinTest" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockitoKotlin" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-java-net-cookiejar = { module = "com.squareup.okhttp3:okhttp-java-net-cookiejar", version.ref = "okhttpJavaNetCookiejar" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "uiTestManifest" }
+ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

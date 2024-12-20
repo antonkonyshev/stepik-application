@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,10 +88,10 @@ fun OrderingDropdown(
             contentColor = MaterialTheme.colorScheme.primary
         ),
         contentPadding = PaddingValues(horizontal = 15.dp, vertical = 0.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth().testTag("orderingButton")
     ) {
         Text(
-            text = "По дате добавляения", style = MaterialTheme.typography.labelLarge,
+            text = stringResource(R.string.by_creation_date), style = MaterialTheme.typography.labelLarge,
             textAlign = TextAlign.End,
             modifier = Modifier.weight(1f)
         )
@@ -199,6 +200,7 @@ fun SearchTextField(
                     query = searchQuery
                 }
             }
+            .testTag("searchInput")
     )
 }
 

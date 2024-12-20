@@ -6,7 +6,6 @@ import com.github.antonkonyshev.stepic.data.network.StepicApi
 import com.github.antonkonyshev.stepic.domain.model.Author
 import com.github.antonkonyshev.stepic.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

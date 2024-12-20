@@ -1,9 +1,12 @@
 package com.github.antonkonyshev.stepic
 
 import android.content.Context
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import androidx.test.core.app.ApplicationProvider
@@ -13,6 +16,7 @@ import com.github.antonkonyshev.stepic.di.databaseModule
 import com.github.antonkonyshev.stepic.di.networkModule
 import com.github.antonkonyshev.stepic.domain.model.Course
 import com.github.antonkonyshev.stepic.domain.repository.CourseRepository
+import com.github.antonkonyshev.stepic.presentation.coursedetails.CourseDetailsScreen
 import com.github.antonkonyshev.stepic.presentation.courselist.CourseListScreen
 import com.github.antonkonyshev.stepic.presentation.courselist.CourseListViewModel
 import com.github.antonkonyshev.stepic.ui.theme.StepicTheme
@@ -43,14 +47,15 @@ import org.mockito.kotlin.verifyBlocking
 import org.robolectric.RobolectricTestRunner
 import java.util.Date
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 @RunWith(RobolectricTestRunner::class)
-class CourseListComposableTestCase : KoinTest {
+class CourseDetailsComposableTestCase : KoinTest {
     private lateinit var context: Context
     private lateinit var courseRepositoryMock: CourseRepository
 
     @get:Rule
-    val listRule = createComposeRule()
+    val detailsRule = createComposeRule()
 
     @Before
     fun setUp() = runBlocking {
@@ -61,7 +66,8 @@ class CourseListComposableTestCase : KoinTest {
                 Course(
                     12, "Testing title", "Testing summary",
                     "Testing description", "", "", "",
-                    9.5f, false, "", Date(), emptyList(), false
+                    9.5f, false, "", Date(), emptyList(),
+                    false
                 )
             )
         ).`when`(courseRepositoryMock).getNext()
@@ -90,41 +96,17 @@ class CourseListComposableTestCase : KoinTest {
     }
 
     @Test
-    fun testCoursesList() = runBlocking {
+    fun testCourseDetails() = runBlocking {
         val viewModel = CourseListViewModel()
-        with(listRule) {
+        viewModel.applySearchFilter("")
+        with(detailsRule) {
             setContent {
                 StepicTheme {
-                    CourseListScreen(viewModel = viewModel)
+                    CourseDetailsScreen(courseId = 12, viewModel = viewModel)
                 }
             }
 
-            assertEquals(1, viewModel.courses.value.size)
-            assertEquals(12, viewModel.courses.value[0].id)
-
-            verify(courseRepositoryMock, times(1)).clearPagination()
-            verifyBlocking(courseRepositoryMock, times(1)) { getNext() }
-
-            onNodeWithTag("searchInput").performTextInput("test")
-            onNodeWithContentDescription("Search").performClick()
-
-            verify(courseRepositoryMock, times(1)).setSearchQuery("test")
-            verify(courseRepositoryMock, times(2)).clearPagination()
-            verifyBlocking(courseRepositoryMock, times(2)) { getNext() }
-
-            onNodeWithTag("orderingButton").performClick()
-
-            verify(courseRepositoryMock, times(1)).setOrdering(true)
-            verify(courseRepositoryMock, times(3)).clearPagination()
-            verifyBlocking(courseRepositoryMock, times(3)) { getNext() }
-            verify(courseRepositoryMock, times(1)).clearFilters()
-
-            viewModel.changeScreen(favorite = true)
-            verify(courseRepositoryMock, times(4)).clearPagination()
-            verify(courseRepositoryMock, times(2)).clearFilters()
-            verify(courseRepositoryMock, times(1)).setFavorite(true)
-            verifyBlocking(courseRepositoryMock, times(4)) { getNext() }
-            verifyBlocking(courseRepositoryMock, times(0)) { updateBookmark(any()) }
+            assertFalse(viewModel.courses.value.isEmpty())
 
             onNodeWithTag("favoriteButton").performClick()
             verifyBlocking(courseRepositoryMock, times(1)) {

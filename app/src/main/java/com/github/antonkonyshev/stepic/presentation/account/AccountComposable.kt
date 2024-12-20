@@ -3,7 +3,6 @@ package com.github.antonkonyshev.stepic.presentation.account
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -136,7 +136,9 @@ fun AuthenticationForm(onSubmit: (String, String) -> Unit = { _, _ -> }) {
                         if (password.isBlank()) passwordFocusRequester.requestFocus() else submit()
                     }
                 ),
-                modifier = Modifier.padding(bottom = 15.dp)
+                modifier = Modifier
+                    .padding(bottom = 15.dp)
+                    .testTag("loginInput")
             )
 
             OutlinedTextField(
@@ -180,10 +182,12 @@ fun AuthenticationForm(onSubmit: (String, String) -> Unit = { _, _ -> }) {
                 modifier = Modifier
                     .focusRequester(passwordFocusRequester)
                     .padding(bottom = 25.dp)
+                    .testTag("passwordInput")
             )
 
             Button(
                 onClick = { submit() },
+                modifier = Modifier.testTag("submitButton")
             ) {
                 Text(
                     text = stringResource(R.string.sign_in),

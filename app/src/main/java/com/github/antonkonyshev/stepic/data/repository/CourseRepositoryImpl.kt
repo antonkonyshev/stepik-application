@@ -21,7 +21,7 @@ class CourseRepositoryImpl() : CourseRepository, KoinComponent {
     private val api: StepicApi by inject()
     private val courseDao: CourseDao by inject()
 
-    private var page: Long = 0
+    var page: Long = 0
     override var pageSize: Int = 20
     override var hasNext: Boolean = false
     override var hasPrevious: Boolean = false

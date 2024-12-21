@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
 
         setContent {
-            StepicTheme(darkTheme = true, dynamicColor = false) {
+            StepicTheme(dynamicColor = false) {
                 val navController = rememberNavController()
 
                 Scaffold(
